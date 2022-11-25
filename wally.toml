@@ -1,0 +1,9 @@
+[package]
+name = "ninjoonline/library"
+description = "Variety of different utility functions"
+version = "1.0.0"
+license = "MIT"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
