@@ -71,6 +71,20 @@ function Library:Lerp(a, b, t)
 	return a + (b - a) * t
 end
 
+-- Weld parts in a model to a base part
+function Library:Weld(part, base)
+	if part:IsA("BasePart") then -- Part
+		local WeldConstraint = Instance.new("WeldConstraint")
+		WeldConstraint.Part0 = base
+		WeldConstraint.Part1 = part
+		WeldConstraint.Parent = base
+	else -- Model
+		for _, child in part:GetChildren() do
+			Library:Weld(child, base)
+		end
+	end
+end
+
 -- Truncate long text
 function Library:Truncate(text, length)
 	if string.len(text) <= length then
