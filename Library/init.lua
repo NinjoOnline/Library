@@ -68,7 +68,7 @@ end
 
 -- Get basic article for words (not perfect, but good enough)
 function Library:Article(text)
-	local Subbed = string.sub(string.split(text, " ")[1], 1, 1)
+	local Subbed = string.sub(string.split(string.lower(text), " ")[1], 1, 1)
 	local Vowels = {"a", "e", "i", "o", "u"}
 	local Prefix = "a"
 	
