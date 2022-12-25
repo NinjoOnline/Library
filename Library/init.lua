@@ -1,8 +1,8 @@
 local Library = {}
 
 -- Add commas to break up number length (example 10000 to 10,000)
-function Library:BreakNumber(num)
-	local Formatted = num
+function Library:BreakNumber(number)
+	local Formatted = number
 
 	while true do
 		local v
@@ -64,6 +64,19 @@ function Library:RomanNumerals(number)
 	end
 
 	return Roman
+end
+
+-- Get basic article for words (not perfect, but good enough)
+function Library:Article(text)
+	local Subbed = string.sub(string.split(text, " ")[1], 1, 1)
+	local Vowels = {"a", "e", "i", "o", "u"}
+	local Prefix = "a"
+	
+	if table.find(Vowels, Subbed) then
+		Prefix = "an"
+	end
+
+	return Prefix
 end
 
 -- Basic lerp
