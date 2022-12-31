@@ -22,13 +22,12 @@ function Library:SuffixNumber(number)
 		return 0
 	end
 
-	local Suffixes = { "K", "M", "B", "T", "Q" }
+	local Suffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qu", "Sd", "St" }
 
 	local i = math.floor(math.log(number, 1e3))
-
 	local v = math.pow(10, i * 3)
 
-	return string.gsub(string.format("%.1f", number / v), "%.?0+$", "") .. (Suffixes[i] or "")
+	return string.gsub(string.format("%.1f", number / v), "%.?0+$", "") .. (Suffixes[i] or ""), Suffixes
 end
 
 -- Convert number to roman numerals (example 56 to LVI)
