@@ -118,14 +118,29 @@ function Library:Truncate(text, length)
 end
 
 -- Convert time (ex. 12:34)
-function Library:ConvertTime(number, sections)
-	if sections == 2 then -- M:S
-		return string.format("%02i:%02i", number / 60 % 60, number % 60)
-	elseif sections == 3 then -- H:M:S
-		return string.format("%02i:%02i:%02i", number / 60 ^ 2, number / 60 % 60, number % 60)
-	elseif sections == 4 then -- D:H:M:S
-		return string.format("%d:%02d:%02d:%02d", number / 86400 % 7, number / 3600 % 24, number / 60 % 60, number % 60)
+function Library:ConvertTime(number, sections, showTimeMetrics)
+	if showTimeMetrics then
+		if sections == 2 then -- Mm Ss
+			return string.format("%02im %02is", number / 60 % 60, number % 60)
+		elseif sections == 3 then -- Hh Mm Ss
+			return string.format("%02ih %02im %02is", number / 60 ^ 2, number / 60 % 60, number % 60)
+		elseif sections == 4 then -- Dd Hh Mm Ss
+			return string.format("%dd %02dh %02dm %02ds", number / 86400 % 7, number / 3600 % 24, number / 60 % 60, number % 60)
+		else
+			warn("No time format for", sections)
+		end
+	else
+		if sections == 2 then -- M:S
+			return string.format("%02i:%02i", number / 60 % 60, number % 60)
+		elseif sections == 3 then -- H:M:S
+			return string.format("%02i:%02i:%02i", number / 60 ^ 2, number / 60 % 60, number % 60)
+		elseif sections == 4 then -- D:H:M:S
+			return string.format("%d:%02d:%02d:%02d", number / 86400 % 7, number / 3600 % 24, number / 60 % 60, number % 60)
+		else
+			warn("No time format for", sections)
+		end
 	end
+
 end
 
 -- Make a given Color3 become slightly darker
