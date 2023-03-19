@@ -22,7 +22,8 @@ function Library:SuffixNumber(number)
 		return 0
 	end
 
-	local Suffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qu", "Sd", "St" }
+	local Suffixes =
+		{ "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qu", "Sd", "St" }
 
 	local i = math.floor(math.log(number, 1e3))
 	local v = math.pow(10, i * 3)
@@ -68,9 +69,9 @@ end
 -- Get basic article for words (not perfect, but good enough)
 function Library:Article(text)
 	local Subbed = string.sub(string.split(string.lower(text), " ")[1], 1, 1)
-	local Vowels = {"a", "e", "i", "o", "u"}
+	local Vowels = { "a", "e", "i", "o", "u" }
 	local Prefix = "a"
-	
+
 	if table.find(Vowels, Subbed) then
 		Prefix = "an"
 	end
@@ -81,6 +82,11 @@ end
 -- Basic lerp
 function Library:Lerp(a, b, t)
 	return a + (b - a) * t
+end
+
+-- Check if table is empty
+function Library:TableEmpty(tab)
+	return next(tab) == nil
 end
 
 -- Weld parts in a model to a base part
@@ -125,7 +131,13 @@ function Library:ConvertTime(number, sections, showTimeMetrics)
 		elseif sections == 3 then -- Hh Mm Ss
 			return string.format("%02ih %02im %02is", number / 60 ^ 2, number / 60 % 60, number % 60)
 		elseif sections == 4 then -- Dd Hh Mm Ss
-			return string.format("%dd %02dh %02dm %02ds", number / 86400 % 7, number / 3600 % 24, number / 60 % 60, number % 60)
+			return string.format(
+				"%dd %02dh %02dm %02ds",
+				number / 86400 % 7,
+				number / 3600 % 24,
+				number / 60 % 60,
+				number % 60
+			)
 		else
 			warn("No time format for", sections)
 		end
@@ -135,12 +147,17 @@ function Library:ConvertTime(number, sections, showTimeMetrics)
 		elseif sections == 3 then -- H:M:S
 			return string.format("%02i:%02i:%02i", number / 60 ^ 2, number / 60 % 60, number % 60)
 		elseif sections == 4 then -- D:H:M:S
-			return string.format("%d:%02d:%02d:%02d", number / 86400 % 7, number / 3600 % 24, number / 60 % 60, number % 60)
+			return string.format(
+				"%d:%02d:%02d:%02d",
+				number / 86400 % 7,
+				number / 3600 % 24,
+				number / 60 % 60,
+				number % 60
+			)
 		else
 			warn("No time format for", sections)
 		end
 	end
-
 end
 
 -- Make a given Color3 become slightly darker

@@ -1,0 +1,9 @@
+{
+    "git.ignoreLimitWarning": true,
+
+    "[lua]": { "editor.defaultFormatter": "JohnnyMorganz.stylua", "editor.formatOnSave": true },
+
+    "editor.tokenColorCustomizations": {
+        "comments": "#15ff00"
+    },
+}
