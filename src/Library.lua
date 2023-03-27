@@ -130,36 +130,23 @@ function Library:ConvertTime(number, showTimeMetrics)
 	local Hours = math.floor(number / 3600) % 24
 	local Days = math.floor(number / 86400)
 
+	local SECONDS_IN_DAY = 24 * 60 * 60
+	local SECONDS_IN_HOUR = 24 * 60 * 60
+
 	if showTimeMetrics then -- Display time as Dd Hh Mm Ss
-		if number >= 86400 then
-			if number >= 864000 then
-				return string.format("%02dd%02dh%02dm%02ds", Days, Hours, Minutes, Seconds)
-			else
-				return string.format("%dd%02dh%02dm%02ds", Days, Hours, Minutes, Seconds)
-			end
-		elseif number >= 3600 then
-			if number >= 36000 then
-				return string.format("%02dh%02dm%02ds", Hours, Minutes, Seconds)
-			else
-				return string.format("%dh%02dm%02ds", Hours, Minutes, Seconds)
-			end
+		if number >= SECONDS_IN_DAY then
+			return string.format("%dd%dh%dm%ds", Days, Hours, Minutes, Seconds)
+		elseif number >= SECONDS_IN_HOUR then
+			return string.format("%dh%dm%ds", Hours, Minutes, Seconds)
 		elseif number >= 60 then
-			if number >= 600 then
-				return string.format("%02dm%02ds", Minutes, Seconds)
-			else
-				return string.format("%dm%02ds", Minutes, Seconds)
-			end
+			return string.format("%dm%ds", Minutes, Seconds)
 		else
-			if number >= 10 then
-				return string.format("%02ds", Seconds)
-			else
-				return string.format("%ds", Seconds)
-			end
+			return string.format("%ds", Seconds)
 		end
 	else -- Display time as D:H:M:S
-		if number >= 86400 then
+		if number >= SECONDS_IN_DAY then
 			return string.format("%02d:%02d:%02d:%02d", Days, Hours, Minutes, Seconds)
-		elseif number >= 3600 then
+		elseif number >= SECONDS_IN_HOUR then
 			return string.format("%02d:%02d:%02d", Hours, Minutes, Seconds)
 		else
 			return string.format("%02d:%02d", Minutes, Seconds)
