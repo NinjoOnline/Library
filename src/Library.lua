@@ -135,11 +135,11 @@ function Library:ConvertTime(number, showTimeMetrics)
 
 	if showTimeMetrics then -- Display time as Dd Hh Mm Ss
 		if number >= SECONDS_IN_DAY then
-			return string.format("%dd%dh%dm%ds", Days, Hours, Minutes, Seconds)
+			return string.format("%dd %dh %dm %ds", Days, Hours, Minutes, Seconds)
 		elseif number >= SECONDS_IN_HOUR then
-			return string.format("%dh%dm%ds", Hours, Minutes, Seconds)
+			return string.format("%dh %dm %ds", Hours, Minutes, Seconds)
 		elseif number >= 60 then
-			return string.format("%dm%ds", Minutes, Seconds)
+			return string.format("%dm %ds", Minutes, Seconds)
 		else
 			return string.format("%ds", Seconds)
 		end
