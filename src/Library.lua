@@ -124,38 +124,45 @@ function Library:Truncate(text, length)
 end
 
 -- Convert time (ex. 12:34)
-function Library:ConvertTime(number, sections, showTimeMetrics)
-	if showTimeMetrics then
-		if sections == 2 then -- Mm Ss
-			return string.format("%02im %02is", number / 60 % 60, number % 60)
-		elseif sections == 3 then -- Hh Mm Ss
-			return string.format("%02ih %02im %02is", number / 60 ^ 2, number / 60 % 60, number % 60)
-		elseif sections == 4 then -- Dd Hh Mm Ss
-			return string.format(
-				"%dd %02dh %02dm %02ds",
-				number / 86400 % 7,
-				number / 3600 % 24,
-				number / 60 % 60,
-				number % 60
-			)
+function Library:ConvertTime(number, showTimeMetrics)
+	local Seconds = number % 60
+	local Minutes = math.floor(number / 60) % 60
+	local Hours = math.floor(number / 3600) % 24
+	local Days = math.floor(number / 86400)
+
+	if showTimeMetrics then -- Display time as Dd Hh Mm Ss
+		if number >= 86400 then
+			if number >= 864000 then
+				return string.format("%02dd%02dh%02dm%02ds", Days, Hours, Minutes, Seconds)
+			else
+				return string.format("%dd%02dh%02dm%02ds", Days, Hours, Minutes, Seconds)
+			end
+		elseif number >= 3600 then
+			if number >= 36000 then
+				return string.format("%02dh%02dm%02ds", Hours, Minutes, Seconds)
+			else
+				return string.format("%dh%02dm%02ds", Hours, Minutes, Seconds)
+			end
+		elseif number >= 60 then
+			if number >= 600 then
+				return string.format("%02dm%02ds", Minutes, Seconds)
+			else
+				return string.format("%dm%02ds", Minutes, Seconds)
+			end
 		else
-			warn("No time format for", sections)
+			if number >= 10 then
+				return string.format("%02ds", Seconds)
+			else
+				return string.format("%ds", Seconds)
+			end
 		end
-	else
-		if sections == 2 then -- M:S
-			return string.format("%02i:%02i", number / 60 % 60, number % 60)
-		elseif sections == 3 then -- H:M:S
-			return string.format("%02i:%02i:%02i", number / 60 ^ 2, number / 60 % 60, number % 60)
-		elseif sections == 4 then -- D:H:M:S
-			return string.format(
-				"%d:%02d:%02d:%02d",
-				number / 86400 % 7,
-				number / 3600 % 24,
-				number / 60 % 60,
-				number % 60
-			)
+	else -- Display time as D:H:M:S
+		if number >= 86400 then
+			return string.format("%02d:%02d:%02d:%02d", Days, Hours, Minutes, Seconds)
+		elseif number >= 3600 then
+			return string.format("%02d:%02d:%02d", Hours, Minutes, Seconds)
 		else
-			warn("No time format for", sections)
+			return string.format("%02d:%02d", Minutes, Seconds)
 		end
 	end
 end
