@@ -185,6 +185,16 @@ function Library:GetRichTextColor(color)
 	return R .. "," .. G .. "," .. B
 end
 
+-- Converts a string back into a Color3 (reverses above string back to Color3)
+function Library:StringToColor3(color3String)
+	local ColorSplit = string.split(color3String, ",")
+	local R = tonumber(ColorSplit[1])
+	local G = tonumber(ColorSplit[2])
+	local B = tonumber(ColorSplit[3])
+
+	return Color3.fromRGB(R, G, B)
+end
+
 function Library:GetRandomNumber(min, max)
 	return min + math.random() * (max - min)
 end
