@@ -5,10 +5,10 @@ function Library:BreakNumber(number)
 	local Formatted = number
 
 	while true do
-		local v
-		Formatted, v = string.gsub(Formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
+		local i
+		Formatted, i = string.gsub(Formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
 
-		if v == 0 then
+		if i == 0 then
 			break
 		end
 	end
@@ -91,6 +91,12 @@ end
 
 -- Weld parts in a model to a base part
 function Library:Weld(part, base)
+	if not part.Parent or not base.Parent then
+		warn("Failed to get part or base | Part:", part, "Base:", base)
+
+		return
+	end
+
 	if part:IsA("BasePart") then -- Part
 		local WeldConstraint = Instance.new("WeldConstraint")
 		WeldConstraint.Part0 = base
@@ -131,7 +137,7 @@ function Library:ConvertTime(number, showTimeMetrics)
 	local Days = math.floor(number / 86400)
 
 	local SECONDS_IN_DAY = 24 * 60 * 60
-	local SECONDS_IN_HOUR = 24 * 60 * 60
+	local SECONDS_IN_HOUR = 60 * 60
 
 	if showTimeMetrics then -- Display time as Dd Hh Mm Ss
 		if number >= SECONDS_IN_DAY then
