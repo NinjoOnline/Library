@@ -212,7 +212,7 @@ end
 
 -- Convert CFrame to table
 function Library:CFrameToTable(cFrame)
-	return { select(4, cFrame:GetComponents()) }
+	return { cFrame:GetComponents() }
 end
 
 -- Round to nearest number
