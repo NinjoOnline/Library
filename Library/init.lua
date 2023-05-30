@@ -18,17 +18,23 @@ end
 
 -- Return a number (example 123456789 to 123.5M)
 function Library:SuffixNumber(number)
-	if number == 0 then
-		return 0
+	if number < 1000 then
+		return number
 	end
 
 	local Suffixes =
 		{ "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qu", "Sd", "St" }
 
 	local i = math.floor(math.log(number, 1e3))
-	local v = math.pow(10, i * 3)
+	local v = 10 ^ (i * 3)
 
-	return string.gsub(string.format("%.1f", number / v), "%.?0+$", "") .. (Suffixes[i] or ""), Suffixes
+	local FormatNumber = string.format("%." .. (3 * i) .. "f", number / v)
+	local Shortened = string.sub(FormatNumber, 1, #FormatNumber - (3 * i - 2))
+	if tonumber(string.sub(Shortened, 3)) == 0 then -- 0, round down
+		Shortened = string.sub(Shortened, 1, 1)
+	end
+
+	return Shortened .. Suffixes[i], Suffixes
 end
 
 -- Convert number to roman numerals (example 56 to LVI)
