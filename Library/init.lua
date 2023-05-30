@@ -97,12 +97,6 @@ end
 
 -- Weld parts in a model to a base part
 function Library:Weld(part, base)
-	if not part.Parent or not base.Parent then
-		warn("Failed to get part or base | Part:", part, "Base:", base)
-
-		return
-	end
-
 	if part:IsA("BasePart") then -- Part
 		local WeldConstraint = Instance.new("WeldConstraint")
 		WeldConstraint.Part0 = base
