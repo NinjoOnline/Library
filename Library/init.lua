@@ -30,8 +30,9 @@ function Library:SuffixNumber(number)
 
 	local FormatNumber = string.format("%." .. (3 * i) .. "f", number / v)
 	local Shortened = string.sub(FormatNumber, 1, #FormatNumber - (3 * i - 2))
-	if tonumber(string.sub(Shortened, 3)) == 0 then -- 0, round down
-		Shortened = string.sub(Shortened, 1, 1)
+	local DecimalPlace = string.find(Shortened, "%p")
+	if DecimalPlace and tonumber(string.sub(Shortened, DecimalPlace + 1)) == 0 then -- 0, round down
+		Shortened = string.sub(Shortened, 1, DecimalPlace - 1)
 	end
 
 	return Shortened .. Suffixes[i], Suffixes
