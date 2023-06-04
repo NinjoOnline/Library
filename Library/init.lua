@@ -213,19 +213,19 @@ end
 
 -- Convert CFrame to table
 function Library:CFrameToTable(cFrame, round)
-	local CFrameData = cFrame:GetComponents()
+	local CFrameData = { cFrame:GetComponents() }
 
 	if round then -- Round position values to a relatively low number
-		for i, v in { CFrameData } do
+		for i, v in CFrameData do
 			if i > 3 then
 				break -- Only round positional values
 			end
 
-			v = Library:RoundTo(v, round)
+			CFrameData[i] = Library:RoundTo(v, round)
 		end
 	end
 
-	return { CFrameData }
+	return CFrameData
 end
 
 -- Round to nearest number
