@@ -216,7 +216,7 @@ function Library:CFrameToTable(cFrame, round)
 	local CFrameData = cFrame:GetComponents()
 
 	if round then -- Round position values to a relatively low number
-		for i, v in CFrameData do
+		for i, v in { CFrameData } do
 			if i > 3 then
 				break -- Only round positional values
 			end
