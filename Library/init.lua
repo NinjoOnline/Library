@@ -212,13 +212,25 @@ function Library:TableToCFrame(tab)
 end
 
 -- Convert CFrame to table
-function Library:CFrameToTable(cFrame)
-	return { cFrame:GetComponents() }
+function Library:CFrameToTable(cFrame, round)
+	local CFrameData = cFrame:GetComponents()
+
+	if round then -- Round position values to a relatively low number
+		for i, v in CFrameData do
+			if i > 3 then
+				break -- Only round positional values
+			end
+
+			v = Library:RoundTo(v, round)
+		end
+	end
+
+	return { CFrameData }
 end
 
 -- Round to nearest number
 function Library:RoundTo(number, nearest)
-	return math.floor(number / nearest + 0.5) * nearest
+	return math.floor(number * nearest) / nearest
 end
 
 return Library
