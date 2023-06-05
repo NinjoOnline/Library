@@ -1,5 +1,7 @@
 local Library = {}
 
+local HttpService = game:GetService("HttpService")
+
 -- Add commas to break up number length (example 10000 to 10,000)
 function Library:BreakNumber(number)
 	local Formatted = number
@@ -226,6 +228,13 @@ function Library:CFrameToTable(cFrame, round)
 	end
 
 	return CFrameData
+end
+
+-- Generates an shortened version of GUID
+function Library:GenerateId()
+	local GUID = string.gsub(string.upper(HttpService:GenerateGUID(false)), "[^%dA-F]", "")
+
+	return GUID
 end
 
 -- Round to nearest number
