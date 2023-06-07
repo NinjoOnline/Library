@@ -223,7 +223,9 @@ function Library:CFrameToTable(cFrame, round)
 				break -- Only round positional values
 			end
 
-			CFrameData[i] = Library:RoundTo(v, round)
+			local SetNumber = math.floor((v * 100) + 0.05) / 100
+
+			CFrameData[i] = (Library:RoundTo((SetNumber * (round * 10)), round)) / (round * 10)
 		end
 	end
 
