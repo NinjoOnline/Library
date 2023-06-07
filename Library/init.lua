@@ -239,7 +239,7 @@ end
 
 -- Round to nearest number
 function Library:RoundTo(number, nearest)
-	return math.floor(number * nearest) / nearest
+	return math.floor(number / nearest) * nearest
 end
 
 return Library
