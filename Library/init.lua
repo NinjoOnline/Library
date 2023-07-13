@@ -232,6 +232,11 @@ function Library:CFrameToTable(cFrame, round)
 	return CFrameData
 end
 
+-- Gets angle between 2 vectors
+function Library:GetAngleBetween(vectorA, vectorB)
+	return math.atan2(vectorA:Cross(vectorB).Magnitude, vectorA:Dot(vectorB))
+end
+
 -- Generates an shortened version of GUID
 function Library:GenerateId()
 	local GUID = string.gsub(string.upper(HttpService:GenerateGUID(false)), "[^%dA-F]", "")
