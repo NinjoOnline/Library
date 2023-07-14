@@ -244,6 +244,13 @@ function Library:GenerateId()
 	return GUID
 end
 
+-- Splits a string with capitals up
+function Library:SplitTitleCaps(text)
+	text = string.gsub(text, "(%u)", " %1")
+
+	return string.gsub(text, "^%s", "")
+end
+
 -- Round to nearest number
 function Library:RoundTo(number, nearest)
 	return math.floor(number / nearest) * nearest
