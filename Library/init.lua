@@ -174,6 +174,17 @@ function Library:MakeDarker(color, amount)
 	return Color3.fromHSV(H, S, V)
 end
 
+-- Make a given Color3 become slightly lighter
+function Library:MakeLighter(color, amount)
+	local Lightness = amount or 0.25
+
+	local H, S, V = color:ToHSV()
+
+	S = math.clamp(S * Lightness, 0, 1)
+
+	return Color3.fromHSV(H, S, V)
+end
+
 -- Get length of a table (dictionary)
 function Library:TableLength(tab)
 	local Length = 0
