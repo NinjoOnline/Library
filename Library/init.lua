@@ -3,7 +3,7 @@ local Library = {}
 local HttpService = game:GetService("HttpService")
 
 -- Add commas to break up number length (example 10000 to 10,000)
-function Library:BreakNumber(number)
+function Library:BreakNumber(number: number): string
 	local Formatted = number
 
 	while true do
@@ -19,7 +19,7 @@ function Library:BreakNumber(number)
 end
 
 -- Return a number (example 123456789 to 123.5M)
-function Library:SuffixNumber(number)
+function Library:SuffixNumber(number: number): string
 	if number < 1000 then
 		return number
 	end
@@ -41,7 +41,7 @@ function Library:SuffixNumber(number)
 end
 
 -- Convert number to roman numerals (example 56 to LVI)
-function Library:RomanNumerals(number)
+function Library:RomanNumerals(number: number): string
 	local Numerals = {
 		{ 1000, "M" },
 		{ 900, "CM" },
@@ -76,7 +76,7 @@ function Library:RomanNumerals(number)
 end
 
 -- Get basic article for words (not perfect, but good enough)
-function Library:Article(text)
+function Library:Article(text: string): string
 	local Subbed = string.sub(string.split(string.lower(text), " ")[1], 1, 1)
 	local Vowels = { "a", "e", "i", "o", "u" }
 	local Prefix = "a"
@@ -89,17 +89,17 @@ function Library:Article(text)
 end
 
 -- Basic lerp
-function Library:Lerp(a, b, t)
+function Library:Lerp(a: number, b: number, t: number): number
 	return a + (b - a) * t
 end
 
 -- Check if table is empty
-function Library:TableEmpty(tab)
+function Library:TableEmpty(tab): boolean
 	return next(tab) == nil
 end
 
 -- Weld parts in a model to a base part
-function Library:Weld(part, base)
+function Library:Weld(part: BasePart, base: BasePart)
 	if part:IsA("BasePart") then -- Part
 		local WeldConstraint = Instance.new("WeldConstraint")
 		WeldConstraint.Part0 = base
@@ -113,7 +113,7 @@ function Library:Weld(part, base)
 end
 
 -- Truncate long text
-function Library:Truncate(text, length)
+function Library:Truncate(text: string, length: number): string
 	if string.len(text) <= length then
 		return text -- Not long enough to need truncating
 	end
@@ -133,7 +133,7 @@ function Library:Truncate(text, length)
 end
 
 -- Convert time (ex. 12:34)
-function Library:ConvertTime(number, showTimeMetrics)
+function Library:ConvertTime(number: number, showTimeMetrics: boolean?): string
 	local Seconds = number % 60
 	local Minutes = math.floor(number / 60) % 60
 	local Hours = math.floor(number / 3600) % 24
@@ -164,7 +164,7 @@ function Library:ConvertTime(number, showTimeMetrics)
 end
 
 -- Make a given Color3 become slightly darker
-function Library:MakeDarker(color, amount)
+function Library:MakeDarker(color: Color3, amount: number?): Color3
 	local Darkness = amount or 0.25
 
 	local H, S, V = color:ToHSV()
@@ -175,7 +175,7 @@ function Library:MakeDarker(color, amount)
 end
 
 -- Make a given Color3 become slightly lighter
-function Library:MakeLighter(color, amount)
+function Library:MakeLighter(color: Color3, amount: number?): Color3
 	local Lightness = amount or 0.25
 
 	local H, S, V = color:ToHSV()
@@ -196,8 +196,19 @@ function Library:TableLength(tab)
 	return Length
 end
 
+function Library:GetModelMass(model: Model): number
+	local Mass = 0
+	for _, part in model:GetChildren() do
+		if part:IsA("BasePart") or part:IsA("UnionOperation") then
+			Mass += part:GetMass()
+		end
+	end
+
+	return Mass
+end
+
 -- Return Color3 as an RGB string
-function Library:GetRichTextColor(color)
+function Library:GetRichTextColor(color: Color3): string
 	local R = math.floor(color.R * 255)
 	local G = math.floor(color.G * 255)
 	local B = math.floor(color.B * 255)
@@ -206,7 +217,7 @@ function Library:GetRichTextColor(color)
 end
 
 -- Converts a string back into a Color3 (reverses above string back to Color3)
-function Library:StringToColor3(color3String)
+function Library:StringToColor3(color3String: string): Color3
 	local ColorSplit = string.split(color3String, ",")
 	local R = tonumber(ColorSplit[1])
 	local G = tonumber(ColorSplit[2])
@@ -215,17 +226,17 @@ function Library:StringToColor3(color3String)
 	return Color3.fromRGB(R, G, B)
 end
 
-function Library:GetRandomNumber(min, max)
+function Library:GetRandomNumber(min: number, max: number): number
 	return min + math.random() * (max - min)
 end
 
 -- Convert table to CFrame
-function Library:TableToCFrame(tab)
+function Library:TableToCFrame(tab): CFrame
 	return CFrame.new(table.unpack(tab))
 end
 
 -- Convert CFrame to table
-function Library:CFrameToTable(cFrame, round)
+function Library:CFrameToTable(cFrame: CFrame, round: number?)
 	local CFrameData = { cFrame:GetComponents() }
 
 	if round then -- Round position values to a relatively low number
@@ -244,26 +255,26 @@ function Library:CFrameToTable(cFrame, round)
 end
 
 -- Gets angle between 2 vectors
-function Library:GetAngleBetween(vectorA, vectorB)
+function Library:GetAngleBetween(vectorA: Vector3, vectorB: Vector3): number
 	return math.atan2(vectorA:Cross(vectorB).Magnitude, vectorA:Dot(vectorB))
 end
 
 -- Generates an shortened version of GUID
-function Library:GenerateId()
+function Library:GenerateId(): string
 	local GUID = string.gsub(string.upper(HttpService:GenerateGUID(false)), "[^%dA-F]", "")
 
 	return GUID
 end
 
 -- Splits a string with capitals up
-function Library:SplitTitleCaps(text)
+function Library:SplitTitleCaps(text: string): string
 	text = string.gsub(text, "(%u)", " %1")
 
 	return string.gsub(text, "^%s", "")
 end
 
 -- Round to nearest number
-function Library:RoundTo(number, nearest)
+function Library:RoundTo(number: number, nearest: number): number
 	return math.floor(number / nearest) * nearest
 end
 
