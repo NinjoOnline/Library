@@ -198,7 +198,7 @@ end
 
 function Library:GetModelMass(model: Model): number
 	local Mass = 0
-	for _, part in model:GetChildren() do
+	for _, part in model:GetDescendants() do
 		if part:IsA("BasePart") or part:IsA("UnionOperation") then
 			Mass += part:GetMass()
 		end
