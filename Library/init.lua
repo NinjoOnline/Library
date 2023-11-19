@@ -198,7 +198,7 @@ function Library:TableLength(tab)
 	return Length
 end
 
-function Library:FilterText(player: Player, text: string): boolean | string
+function Library:FilterString(player: Player, text: string): boolean | string
 	if RunService:IsClient() then
 		return false, "Unable to filter text on client"
 	end
