@@ -23,7 +23,7 @@ end
 -- Return a number (example 123456789 to 123.5M)
 function Library:SuffixNumber(number: number): string
 	if number < 1000 then
-		return number
+		return tostring(number)
 	end
 
 	local Suffixes =
