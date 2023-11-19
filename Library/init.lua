@@ -1,6 +1,8 @@
 local Library = {}
 
 local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local TextService = game:GetService("TextService")
 
 -- Add commas to break up number length (example 10000 to 10,000)
 function Library:BreakNumber(number: number): string
@@ -194,6 +196,28 @@ function Library:TableLength(tab)
 	end
 
 	return Length
+end
+
+function Library:FilterText(player: Player, text: string): boolean | string
+	if RunService:IsClient() then
+		return false, "Unable to filter text on client"
+	end
+
+	local Success, TextObject = pcall(function()
+		return TextService:FilterStringAsync(text, player.UserId)
+	end)
+	if not Success then
+		return false, "Failed to get text object for filtering"
+	end
+
+	local SecondSuccess, FilteredMessage = pcall(function()
+		return TextObject:GetNonChatStringForBroadcastAsync()
+	end)
+	if not SecondSuccess then
+		return "Failed to filter string " .. FilteredMessage
+	end
+
+	return true, FilteredMessage
 end
 
 function Library:GetModelMass(model: Model): number
