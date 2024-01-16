@@ -250,6 +250,18 @@ function Library:StringToColor3(color3String: string): Color3
 	return Color3.fromRGB(R, G, B)
 end
 
+function Library:CalculateLuminance(color3: Color3): number
+	return 0.299 * color3.R + 0.587 * color3.G + 0.114 * color3.B
+end
+
+function Library:IsColorDark(color3: Color3, threshold: number?): boolean
+	local Luminance = self:CalculateLuminance(color3)
+
+	threshold = threshold and threshold or 0.5
+
+	return Luminance < threshold
+end
+
 function Library:GetRandomNumber(min: number, max: number): number
 	return min + math.random() * (max - min)
 end
