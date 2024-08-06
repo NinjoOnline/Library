@@ -250,6 +250,25 @@ function Library:StringToColor3(color3String: string): Color3
 	return Color3.fromRGB(R, G, B)
 end
 
+-- Get a random color within a set variation
+function Library:GetRandomColor(color: Color3, variation: number): Color3
+	local R = color.R * 255
+	local G = color.G * 255
+	local B = color.B * 255
+
+	-- Generate random values within the range of -variation to +variation
+	local rVariation = math.random(-variation, variation)
+	local gVariation = math.random(-variation, variation)
+	local bVariation = math.random(-variation, variation)
+
+	-- Apply the variations
+	R = math.clamp(R + rVariation, 0, 255)
+	G = math.clamp(G + gVariation, 0, 255)
+	B = math.clamp(B + bVariation, 0, 255)
+
+	return Color3.fromRGB(R, G, B)
+end
+
 function Library:CalculateLuminance(color3: Color3): number
 	return 0.299 * color3.R + 0.587 * color3.G + 0.114 * color3.B
 end
