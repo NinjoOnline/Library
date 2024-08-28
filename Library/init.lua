@@ -165,6 +165,31 @@ function Library:ConvertTime(number: number, showTimeMetrics: boolean?): string
 	end
 end
 
+-- Get how much time has passed
+function Library:GetTimeAgo(givenTime)
+	local TimeDifference = os.time() - givenTime
+
+	if TimeDifference < 60 then -- Less than a minute
+		return TimeDifference .. " seconds ago"
+	elseif TimeDifference < 3600 then -- Less than an hour
+		local MinutesAgo = math.floor(TimeDifference / 60)
+
+		return MinutesAgo .. (MinutesAgo == 1 and " minute ago" or " minutes ago")
+	elseif TimeDifference < 86400 then -- Less than a day
+		local HoursAgo = math.floor(TimeDifference / 3600)
+
+		return HoursAgo .. (HoursAgo == 1 and " hour ago" or " hours ago")
+	elseif TimeDifference < 604800 then -- Less than a week
+		local DaysAgo = math.floor(TimeDifference / 86400)
+
+		return DaysAgo .. (DaysAgo == 1 and " day ago" or " days ago")
+	else -- More than a week
+		local WeeksAgo = math.floor(TimeDifference / 604800)
+
+		return WeeksAgo .. (WeeksAgo == 1 and " week ago" or " weeks ago")
+	end
+end
+
 -- Make a given Color3 become slightly darker
 function Library:MakeDarker(color: Color3, amount: number?): Color3
 	local Darkness = amount or 0.25
