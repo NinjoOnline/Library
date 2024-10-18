@@ -43,7 +43,7 @@ function Library:SuffixNumber(number: number): string
 end
 
 -- Convert number to roman numerals (example 56 to LVI)
-function Library:RomanNumerals(number: number): string
+function Library:NumberToRomanNumeral(number: number): string
 	local Numerals = {
 		{ 1000, "M" },
 		{ 900, "CM" },
@@ -75,6 +75,39 @@ function Library:RomanNumerals(number: number): string
 	end
 
 	return Roman
+end
+
+-- Convert roman numerals to number (example LVI to 56)
+function Library:RomanNumeralToNumber(romanNumeral: string): number
+	local Values = {
+		I = 1,
+		V = 5,
+		X = 10,
+		L = 50,
+		C = 100,
+		D = 500,
+		M = 1000,
+	}
+
+	local Total = 0
+	local PreviousValue = 0
+
+	-- Iterate through each character in the Roman numeral string
+	for i = #romanNumeral, 1, -1 do
+		local Character = string.sub(romanNumeral, i, i)
+		local Value = Values[Character]
+
+		-- If the value is smaller than the previous one, subtract it (like IV = 4)
+		if Value < PreviousValue then
+			Total -= Value
+		else
+			Total += Value
+		end
+
+		PreviousValue = Value -- Update the previous value to the current one
+	end
+
+	return Total
 end
 
 -- Get basic article for words (not perfect, but good enough)
