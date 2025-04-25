@@ -32,14 +32,10 @@ function Library:SuffixNumber(number: number): string
 	local i = math.floor(math.log(number, 1e3))
 	local v = 10 ^ (i * 3)
 
-	local FormatNumber = string.format("%." .. (3 * i) .. "f", number / v)
-	local Shortened = string.sub(FormatNumber, 1, #FormatNumber - (3 * i - 2))
-	local DecimalPlace = string.find(Shortened, "%p")
-	if DecimalPlace and tonumber(string.sub(Shortened, DecimalPlace + 1)) == 0 then -- 0, round down
-		Shortened = string.sub(Shortened, 1, DecimalPlace - 1)
-	end
+	local Divided = number / v
+	local Shortened = tostring(math.floor(Divided * 100) / 100) -- keep up to 2 decimals, no extra 0s
 
-	return Shortened .. Suffixes[i], Suffixes
+	return Shortened .. Suffixes[i]
 end
 
 -- Convert number to roman numerals (example 56 to LVI)
