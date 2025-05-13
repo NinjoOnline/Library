@@ -38,6 +38,48 @@ function Library:SuffixNumber(number: number): string
 	return Shortened .. Suffixes[i]
 end
 
+-- Return a suffixed number (example 123.5M to 123500000)
+function Library:ParseSuffixNumber(input)
+	input = string.lower(input)
+	input = string.gsub(input, ",", "")
+	input = string.gsub(input, "%s+", "")
+
+	local NumberPart, SuffixPart = string.match(input, "([%d%.]+)(%a*)")
+	if not NumberPart then
+		return
+	end
+
+	local Number = tonumber(NumberPart)
+	if not Number then
+		return
+	end
+
+	local Suffixes = {
+		["k"] = 1e3,
+		["m"] = 1e6,
+		["b"] = 1e9,
+		["t"] = 1e12,
+		["qa"] = 1e15,
+		["qi"] = 1e18,
+		["sx"] = 1e21,
+		["sp"] = 1e24,
+		["oc"] = 1e27,
+		["no"] = 1e30,
+		["dc"] = 1e33,
+		["ud"] = 1e36,
+		["dd"] = 1e39,
+		["td"] = 1e42,
+		["qad"] = 1e45,
+		["qu"] = 1e48,
+		["sd"] = 1e51,
+		["st"] = 1e54,
+	}
+
+	local Multiplier = Suffixes[SuffixPart] or 1
+
+	return Number * Multiplier
+end
+
 -- Convert number to roman numerals (example 56 to LVI)
 function Library:NumberToRomanNumeral(number: number): string
 	local Numerals = {
