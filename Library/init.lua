@@ -212,12 +212,12 @@ function Library:ConvertTime(number: number, showTimeMetrics: boolean?): string
 	local Hours = math.floor(number / 3600) % 24
 	local Days = math.floor(number / 86400)
 
-	local SECONDS_IN_DAY = 24 * 60 * 60
-	local SECONDS_IN_HOUR = 60 * 60
+	local SECONDS_IN_DAY = 86400
+	local SECONDS_IN_HOUR = 3600
 
-	if showTimeMetrics then -- Display time as Dd Hh Mm Ss
+	if showTimeMetrics then
 		if number >= SECONDS_IN_DAY then
-			return string.format("%dd %dh %dm %ds", Days, Hours, Minutes, Seconds)
+			return string.format("%d %s", Days, Days == 1 and "Day" or "Days")
 		elseif number >= SECONDS_IN_HOUR then
 			return string.format("%dh %dm %ds", Hours, Minutes, Seconds)
 		elseif number >= 60 then
@@ -225,7 +225,7 @@ function Library:ConvertTime(number: number, showTimeMetrics: boolean?): string
 		else
 			return string.format("%ds", Seconds)
 		end
-	else -- Display time as D:H:M:S
+	else
 		if number >= SECONDS_IN_DAY then
 			return string.format("%02d:%02d:%02d:%02d", Days, Hours, Minutes, Seconds)
 		elseif number >= SECONDS_IN_HOUR then
