@@ -284,7 +284,7 @@ function Library:MakeLighter(color: Color3, amount: number?): Color3
 end
 
 -- Get length of a table (dictionary)
-function Library:TableLength(tab)
+function Library:TableLength(tab: { any })
 	local Length = 0
 
 	for _, _ in tab do
@@ -294,7 +294,7 @@ function Library:TableLength(tab)
 	return Length
 end
 
-function Library:FilterString(player: Player, text: string): boolean | string
+function Library:FilterString(player: Player, text: string): (boolean, string)
 	if RunService:IsClient() then
 		return false, "Unable to filter text on client"
 	end
@@ -310,7 +310,7 @@ function Library:FilterString(player: Player, text: string): boolean | string
 		return TextObject:GetNonChatStringForBroadcastAsync()
 	end)
 	if not SecondSuccess then
-		return "Failed to filter string " .. FilteredMessage
+		return false, "Failed to filter string " .. FilteredMessage
 	end
 
 	return true, FilteredMessage
