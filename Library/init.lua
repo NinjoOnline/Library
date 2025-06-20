@@ -4,6 +4,13 @@ local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local TextService = game:GetService("TextService")
 
+type TimeOptions = {
+	ClampMetrics: number?,
+	ShowMetrics: boolean?,
+	HideZeroes: boolean?,
+	VisibleMetrics: { string }?,
+}
+
 -- Add commas to break up number length (example 10000 to 10,000)
 function Library:BreakNumber(number: number): string
 	local Formatted = number
@@ -206,33 +213,63 @@ function Library:Truncate(text: string, length: number): string
 end
 
 -- Convert time (ex. 12:34)
-function Library:ConvertTime(number: number, showTimeMetrics: boolean?): string
-	local Seconds = number % 60
-	local Minutes = math.floor(number / 60) % 60
-	local Hours = math.floor(number / 3600) % 24
-	local Days = math.floor(number / 86400)
+function Library:ConvertTime(number: number, options: TimeOptions): string
+	options = options or {}
 
-	local SECONDS_IN_DAY = 86400
-	local SECONDS_IN_HOUR = 3600
+	local ClampMetrics = options.ClampMetrics or nil
+	local ShowMetrics = options.ShowMetrics or false
+	local HideZeroes = options.HideZeroes or false
+	local VisibleMetrics = options.VisibleMetrics or { "d", "h", "m", "s" }
 
-	if showTimeMetrics then
-		if number >= SECONDS_IN_DAY then
-			return string.format("%d %s", Days, Days == 1 and "Day" or "Days")
-		elseif number >= SECONDS_IN_HOUR then
-			return string.format("%dh %dm %ds", Hours, Minutes, Seconds)
-		elseif number >= 60 then
-			return string.format("%dm %ds", Minutes, Seconds)
+	local Units = {
+		d = math.floor(number / 86400),
+		h = math.floor(number / 3600) % 24,
+		m = math.floor(number / 60) % 60,
+		s = number % 60,
+	}
+
+	local Labels = {
+		d = { long = "Day", short = "d" },
+		h = { long = "Hour", short = "h" },
+		m = { long = "Minute", short = "m" },
+		s = { long = "Second", short = "s" },
+	}
+
+	local Parts = {}
+
+	for _, unit in VisibleMetrics do
+		local Value = Units[unit]
+		if ShowMetrics then
+			if not HideZeroes or Value > 0 then
+				table.insert(Parts, string.format("%d%s", Value, Labels[unit].short))
+			end
 		else
-			return string.format("%ds", Seconds)
+			table.insert(Parts, string.format("%02d", Value))
 		end
+	end
+
+	-- Clamp metrics if requested
+	if ClampMetrics and ShowMetrics then
+		local ClampedParts = {}
+		for _, part in Parts do
+			if #ClampedParts < ClampMetrics then
+				table.insert(ClampedParts, part)
+			else
+				break
+			end
+		end
+
+		Parts = ClampedParts
+	elseif ClampMetrics and not ShowMetrics then
+		while #Parts > ClampMetrics do
+			table.remove(Parts, 1)
+		end
+	end
+
+	if ShowMetrics then
+		return table.concat(Parts, " ")
 	else
-		if number >= SECONDS_IN_DAY then
-			return string.format("%02d:%02d:%02d:%02d", Days, Hours, Minutes, Seconds)
-		elseif number >= SECONDS_IN_HOUR then
-			return string.format("%02d:%02d:%02d", Hours, Minutes, Seconds)
-		else
-			return string.format("%02d:%02d", Minutes, Seconds)
-		end
+		return table.concat(Parts, ":")
 	end
 end
 
