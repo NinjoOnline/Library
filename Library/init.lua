@@ -5,9 +5,10 @@ local RunService = game:GetService("RunService")
 local TextService = game:GetService("TextService")
 
 type TimeOptions = {
-	ClampMetrics: number?,
 	ShowMetrics: boolean?,
 	HideZeroes: boolean?,
+	ClampMetrics: number?,
+	ClampDays: boolean?,
 	VisibleMetrics: { string }?,
 }
 
@@ -218,6 +219,8 @@ function Library:ConvertTime(number: number, options: TimeOptions?): string
 
 	local ShowMetrics = if options and options.ShowMetrics ~= nil then options.ShowMetrics else false
 	local HideZeroes = if options and options.HideZeroes ~= nil then options.HideZeroes else true
+	local ClampMetrics = options and options.ClampMetrics
+	local ClampDays = options and options.ClampDays
 	local VisibleMetrics = options and options.VisibleMetrics
 
 	local Units = {
@@ -227,7 +230,7 @@ function Library:ConvertTime(number: number, options: TimeOptions?): string
 		s = number % 60,
 	}
 
-	-- If colon format, dynamically choose visible metrics if not specified
+	-- Dynamically set VisibleMetrics for colon format if not provided
 	if not ShowMetrics and not VisibleMetrics then
 		if number >= 86400 then
 			VisibleMetrics = { "d", "h", "m", "s" }
@@ -238,8 +241,15 @@ function Library:ConvertTime(number: number, options: TimeOptions?): string
 		end
 	end
 
-	-- Default visible metrics if none specified
+	-- Default to all units
 	VisibleMetrics = VisibleMetrics or { "d", "h", "m", "s" }
+
+	-- Handle ClampDays: if ShowMetrics + ClampDays + days > 0 → just show "X Day(s)"
+	if ShowMetrics and ClampDays and Units.d > 0 then
+		local Label = Units.d == 1 and "Day" or "Days"
+
+		return string.format("%d %s", Units.d, Label)
+	end
 
 	local Parts = {}
 	for _, unit in VisibleMetrics do
@@ -251,6 +261,19 @@ function Library:ConvertTime(number: number, options: TimeOptions?): string
 		else
 			table.insert(Parts, string.format("%02d", Value))
 		end
+	end
+
+	-- Apply ClampMetrics in ShowMetrics mode
+	if ShowMetrics and ClampMetrics then
+		local ClampedParts = {}
+		for _, part in Parts do
+			if #ClampedParts < ClampMetrics then
+				table.insert(ClampedParts, part)
+			else
+				break
+			end
+		end
+		Parts = ClampedParts
 	end
 
 	-- Optionally trim leading zero parts for colon format + hideZeroes
