@@ -213,13 +213,12 @@ function Library:Truncate(text: string, length: number): string
 end
 
 -- Convert time (ex. 12:34)
-function Library:ConvertTime(number: number, options: TimeOptions): string
+function Library:ConvertTime(number: number, options: TimeOptions?): string
 	options = options or {}
 
-	local ClampMetrics = options.ClampMetrics or nil
-	local ShowMetrics = options.ShowMetrics or false
-	local HideZeroes = options.HideZeroes or false
-	local VisibleMetrics = options.VisibleMetrics or { "d", "h", "m", "s" }
+	local ShowMetrics = if options and options.ShowMetrics ~= nil then options.ShowMetrics else false
+	local HideZeroes = if options and options.HideZeroes ~= nil then options.HideZeroes else true
+	local VisibleMetrics = options and options.VisibleMetrics
 
 	local Units = {
 		d = math.floor(number / 86400),
@@ -228,40 +227,35 @@ function Library:ConvertTime(number: number, options: TimeOptions): string
 		s = number % 60,
 	}
 
-	local Labels = {
-		d = { long = "Day", short = "d" },
-		h = { long = "Hour", short = "h" },
-		m = { long = "Minute", short = "m" },
-		s = { long = "Second", short = "s" },
-	}
+	-- If colon format, dynamically choose visible metrics if not specified
+	if not ShowMetrics and not VisibleMetrics then
+		if number >= 86400 then
+			VisibleMetrics = { "d", "h", "m", "s" }
+		elseif number >= 3600 then
+			VisibleMetrics = { "h", "m", "s" }
+		else
+			VisibleMetrics = { "m", "s" }
+		end
+	end
+
+	-- Default visible metrics if none specified
+	VisibleMetrics = VisibleMetrics or { "d", "h", "m", "s" }
 
 	local Parts = {}
-
 	for _, unit in VisibleMetrics do
 		local Value = Units[unit]
 		if ShowMetrics then
 			if not HideZeroes or Value > 0 then
-				table.insert(Parts, string.format("%d%s", Value, Labels[unit].short))
+				table.insert(Parts, string.format("%d%s", Value, unit))
 			end
 		else
 			table.insert(Parts, string.format("%02d", Value))
 		end
 	end
 
-	-- Clamp metrics if requested
-	if ClampMetrics and ShowMetrics then
-		local ClampedParts = {}
-		for _, part in Parts do
-			if #ClampedParts < ClampMetrics then
-				table.insert(ClampedParts, part)
-			else
-				break
-			end
-		end
-
-		Parts = ClampedParts
-	elseif ClampMetrics and not ShowMetrics then
-		while #Parts > ClampMetrics do
+	-- Optionally trim leading zero parts for colon format + hideZeroes
+	if not ShowMetrics and HideZeroes then
+		while #Parts > 1 and Parts[1] == "00" do
 			table.remove(Parts, 1)
 		end
 	end
